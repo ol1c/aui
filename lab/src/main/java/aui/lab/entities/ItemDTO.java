@@ -31,7 +31,7 @@ public class ItemDTO implements Comparable<ItemDTO> {
 
     @Override
     public String toString() {
-        return name + ", "  + categoryName + ", " + price + ", " +  id;
+        return name + ", "  + categoryName + ", " + price;
     }
 
     @Override

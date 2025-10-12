@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -79,6 +81,31 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
                         .map(ItemDTO::from)
                         .forEach(item -> System.out.println("  " + item));
             });
+        }
+
+        ForkJoinPool customPool = new ForkJoinPool(2);
+
+        Runnable task = () -> categories.parallelStream().forEach(category -> {
+            System.out.println("[" + Thread.currentThread().getName() + "] Category: " + category.getName());
+            category.getItems().stream()
+                    .map(ItemDTO::from)
+                    .forEach(item -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                System.out.println("   [" + Thread.currentThread().getName() + "] Item: " + item);
+            });
+        });
+
+        try {
+            customPool.submit(task).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            customPool.shutdown();
+            customPool.awaitTermination(1, TimeUnit.MINUTES);
         }
 
 //        Scanner scanner = new Scanner(System.in);
