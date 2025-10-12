@@ -34,12 +34,18 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         Set<Item> allItems = categories.stream()
                 .flatMap(category -> category.getItems().stream())
                 .collect(Collectors.toSet());
-        allItems.stream().forEach(System.out::println);
+        allItems.forEach(System.out::println);
 
         allItems.stream()
                 .filter(item -> item.getName().startsWith("C"))
                 .sorted(Comparator.comparing(Item::getPrice))
                 .forEach(System.out::println);
+
+        List<ItemDTO> allItemsDTO = allItems.stream()
+                .map(ItemDTO::from)
+                .sorted()
+                .toList();
+        allItemsDTO.forEach(System.out::println);
 
 //        Scanner scanner = new Scanner(System.in);
 //        String command;
