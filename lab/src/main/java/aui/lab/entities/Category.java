@@ -41,4 +41,8 @@ public class Category implements Comparable<Category> {
                 .thenComparing(Category::getId)
                 .compare(this, other);
     }
+
+    public void addItem(Item item) {
+
+    }
 }

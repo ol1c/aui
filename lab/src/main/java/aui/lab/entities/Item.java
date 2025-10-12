@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(exclude = "category")
@@ -27,9 +28,7 @@ public class Item implements Comparable<Item> {
 
     private String name;
 
-    private Integer price;
-
-    private Integer amount;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name="category")
@@ -39,7 +38,6 @@ public class Item implements Comparable<Item> {
     public int compareTo(Item other) {
         return Comparator.comparing(Item::getName)
                 .thenComparing(Item::getPrice)
-                .thenComparing((Item::getAmount))
                 .thenComparing(Item::getId)
                 .compare(this, other);
     }

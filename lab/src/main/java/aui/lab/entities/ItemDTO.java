@@ -23,7 +23,6 @@ public class ItemDTO {
                 .id(item.getId().toString())
                 .name(item.getName())
                 .price(item.getPrice().toString())
-                .amount(item.getPrice().toString())
                 .categoryName(
                         item.getCategory() != null ? item.getCategory().getName() : null)
                 .build();
