@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.UUID;
 
@@ -22,7 +23,9 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name="items")
-public class Item implements Comparable<Item> {
+public class Item implements Comparable<Item>, Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     private UUID id;
 

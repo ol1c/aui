@@ -11,6 +11,7 @@ import lombok.ToString;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -25,14 +26,16 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name="categories")
-public class Category implements Comparable<Category> {
+public class Category implements Comparable<Category>, Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     private UUID id;
 
     @Column(name="category_name")
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Item> items;
 
     @Override

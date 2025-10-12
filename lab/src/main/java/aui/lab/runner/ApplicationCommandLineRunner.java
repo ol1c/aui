@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApplicationCommandLineRunner implements CommandLineRunner {
 
-    private final ObjectWriter writer;
+//    private final ObjectWriter writer;
 
     @Override
     public void run(String... args) throws Exception {
@@ -28,24 +29,57 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         List<Category> categories = List.of(drinks, snacks);
         categories.forEach(category -> {
             System.out.println(category);
-            category.getItems().forEach((item -> System.out.println("   " + item)));
+            category.getItems().stream()
+                    .map(ItemDTO::from)
+                    .forEach((item -> System.out.println("   " + item)));
         });
+        System.out.println();
 
         Set<Item> allItems = categories.stream()
                 .flatMap(category -> category.getItems().stream())
                 .collect(Collectors.toSet());
-        allItems.forEach(System.out::println);
+        allItems.stream().map(ItemDTO::from).forEach(System.out::println);
+        System.out.println();
 
         allItems.stream()
                 .filter(item -> item.getName().startsWith("C"))
                 .sorted(Comparator.comparing(Item::getPrice))
+                .map(ItemDTO::from)
                 .forEach(System.out::println);
+        System.out.println();
 
         List<ItemDTO> allItemsDTO = allItems.stream()
                 .map(ItemDTO::from)
                 .sorted()
                 .toList();
         allItemsDTO.forEach(System.out::println);
+        System.out.println();
+
+        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream("categories.bin"))) {
+            output.writeObject(categories);
+            System.out.println("Saved to file");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Saving error");
+        }
+
+        List<Category> categoriesFromFile = null;
+        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream("categories.bin"))) {
+            categoriesFromFile = (List<Category>) input.readObject();
+            System.out.println("Loaded from file");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Loading error");
+        }
+
+        if (categoriesFromFile != null) {
+            categoriesFromFile.forEach(category -> {
+                System.out.println(category);
+                category.getItems().stream()
+                        .map(ItemDTO::from)
+                        .forEach(item -> System.out.println("  " + item));
+            });
+        }
 
 //        Scanner scanner = new Scanner(System.in);
 //        String command;
