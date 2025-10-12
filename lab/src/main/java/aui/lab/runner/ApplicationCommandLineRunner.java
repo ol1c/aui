@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +30,16 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
             System.out.println(category);
             category.getItems().forEach((item -> System.out.println("   " + item)));
         });
+
+        Set<Item> allItems = categories.stream()
+                .flatMap(category -> category.getItems().stream())
+                .collect(Collectors.toSet());
+        allItems.stream().forEach(System.out::println);
+
+        allItems.stream()
+                .filter(item -> item.getName().startsWith("C"))
+                .sorted(Comparator.comparing(Item::getPrice))
+                .forEach(System.out::println);
 
 //        Scanner scanner = new Scanner(System.in);
 //        String command;
