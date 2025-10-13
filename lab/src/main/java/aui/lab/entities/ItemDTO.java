@@ -1,10 +1,6 @@
 package aui.lab.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Comparator;
 
@@ -13,6 +9,7 @@ import java.util.Comparator;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ItemDTO implements Comparable<ItemDTO> {
     private String id;
     private String name;
@@ -29,10 +26,10 @@ public class ItemDTO implements Comparable<ItemDTO> {
                 .build();
     }
 
-    @Override
-    public String toString() {
-        return name + ", "  + categoryName + ", " + price;
-    }
+//    @Override
+//    public String toString() {
+//        return name + ", "  + categoryName + ", " + price;
+//    }
 
     @Override
     public int compareTo(ItemDTO other) {
