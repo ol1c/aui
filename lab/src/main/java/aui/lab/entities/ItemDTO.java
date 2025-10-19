@@ -26,11 +26,6 @@ public class ItemDTO implements Comparable<ItemDTO> {
                 .build();
     }
 
-//    @Override
-//    public String toString() {
-//        return name + ", "  + categoryName + ", " + price;
-//    }
-
     @Override
     public int compareTo(ItemDTO other) {
         return Comparator.comparing(ItemDTO::getName)

@@ -29,12 +29,14 @@ public class Item implements Comparable<Item>, Serializable {
     @Id
     private UUID id;
 
+    @Column(name = "item_name", nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name="category")
+    @JoinColumn(name = "category")
     private Category category;
 
     @Override

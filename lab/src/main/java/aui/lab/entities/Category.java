@@ -12,6 +12,7 @@ import lombok.ToString;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -32,11 +33,16 @@ public class Category implements Comparable<Category>, Serializable {
     @Id
     private UUID id;
 
-    @Column(name="category_name")
+    @Column(name = "category_name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Item> items;
+    @OneToMany(
+            mappedBy = "category",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<Item> items = new ArrayList<>();
 
     @Override
     public int compareTo(Category other) {
@@ -46,6 +52,16 @@ public class Category implements Comparable<Category>, Serializable {
     }
 
     public void addItem(Item item) {
+        if (item != null) {
+            item.setCategory(this);
+            this.items.add(item);
+        }
+    }
 
+    public void removeItem(Item item) {
+        if (item != null) {
+            item.setCategory(null);
+            this.items.remove(item);
+        }
     }
 }
