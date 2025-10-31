@@ -34,27 +34,26 @@ public class ItemResource {
         return ResponseEntity.ok(itemService.findAllByCategoryId(categoryId).stream().map(ItemDTO::from).toList());
     }
 
-    @PostMapping("/categories/{categoryId}/items")
-    public ResponseEntity<ItemDTO> addItem(@PathVariable UUID categoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
-        String name = itemUpdateDTO.getName();
-        Double price = itemUpdateDTO.getPrice();
-        Item item = itemService.create(categoryId, name, price);
-        return new ResponseEntity<>(ItemDTO.from(item), HttpStatus.CREATED);
-    }
+//    @PostMapping("/categories/{categoryId}/items")
+//    public ResponseEntity<ItemDTO> addItem(@PathVariable UUID categoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
+//        String name = itemUpdateDTO.getName();
+//        Double price = itemUpdateDTO.getPrice();
+//        Item item = itemService.create(categoryId, name, price);
+//        return new ResponseEntity<>(ItemDTO.from(item), HttpStatus.CREATED);
+//    }
 
     @PutMapping("/items/{id}")
-    public ResponseEntity<ItemDTO> updateItem(@PathVariable UUID id,@RequestParam(required = false) UUID newCategoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
+    public ResponseEntity<ItemDTO> updateItem(@PathVariable UUID id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         String name = itemUpdateDTO.getName();
         Double price = itemUpdateDTO.getPrice();
-        Optional<Item> item = itemService.findById(id);
-        if (item.isEmpty()) {
+        Optional<Item> optionalItem = itemService.findById(id);
+        if (optionalItem.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
-            if (newCategoryId != null) {
-                return new ResponseEntity<>(ItemDTO.from(itemService.save(item.get(),newCategoryId)), HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(ItemDTO.from(itemService.save(item.get())), HttpStatus.CREATED);
-            }
+            Item item = optionalItem.get();
+            item.setName(name);
+            item.setPrice(price);
+            return new ResponseEntity<>(ItemDTO.from(itemService.save(item)), HttpStatus.CREATED);
         }
     }
 

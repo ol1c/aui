@@ -65,18 +65,6 @@ public class ItemService {
     }
 
     @Transactional
-    public Item save(Item item, UUID newCategoryId) {
-        Category oldCategory = itemRepository.findById(item.getId()).get().getCategory();
-        oldCategory.removeItem(item);
-        Category newCategoryRef = entityManager.getReference(Category.class, newCategoryId);
-        if (newCategoryRef == null) {
-            throw new NoSuchElementException();
-        }
-        newCategoryRef.addItem(item);
-        return itemRepository.save(item);
-    }
-
-    @Transactional
     public List<Item> saveAll(Iterable<Item> items) {
         return itemRepository.saveAll(items);
     }

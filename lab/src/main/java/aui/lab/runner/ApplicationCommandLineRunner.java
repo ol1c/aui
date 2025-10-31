@@ -5,6 +5,7 @@ import aui.lab.services.CategoryService;
 import aui.lab.services.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
