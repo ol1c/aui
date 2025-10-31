@@ -37,7 +37,7 @@ public class ItemResource {
     @PostMapping("/categories/{categoryId}/items")
     public ResponseEntity<ItemDTO> addItem(@PathVariable UUID categoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         String name = itemUpdateDTO.getName();
-        Double price = Double.parseDouble(itemUpdateDTO.getPrice());
+        Double price = itemUpdateDTO.getPrice();
         Item item = itemService.create(categoryId, name, price);
         return new ResponseEntity<>(ItemDTO.from(item), HttpStatus.CREATED);
     }
@@ -45,7 +45,7 @@ public class ItemResource {
     @PutMapping("/items/{id}")
     public ResponseEntity<ItemDTO> updateItem(@PathVariable UUID id,@RequestParam(required = false) UUID newCategoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         String name = itemUpdateDTO.getName();
-        Double price = Double.parseDouble(itemUpdateDTO.getPrice());
+        Double price = itemUpdateDTO.getPrice();
         Optional<Item> item = itemService.findById(id);
         if (item.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -61,6 +61,6 @@ public class ItemResource {
     @DeleteMapping("/items/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable UUID id) {
         itemService.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

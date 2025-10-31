@@ -1,5 +1,8 @@
 package aui.lab.entities;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.util.Comparator;
@@ -11,8 +14,11 @@ import java.util.Comparator;
 @AllArgsConstructor
 @ToString
 public class ItemUpdateDTO implements Comparable<ItemUpdateDTO> {
+    @NotBlank
     private String name;
-    private String price;
+    @NotNull
+    @Positive
+    private Double price;
 
     @Override
     public int compareTo(ItemUpdateDTO other) {

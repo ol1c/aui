@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicMarkableReference;
 
 @Service
 @RequiredArgsConstructor
@@ -55,8 +54,8 @@ public class ItemService {
                 .id(UUID.randomUUID())
                 .name(name)
                 .price(price)
-                .category(categoryRef)
                 .build();
+        categoryRef.addItem(item);
         return itemRepository.save(item);
     }
 

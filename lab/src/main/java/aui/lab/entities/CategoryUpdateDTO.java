@@ -2,6 +2,7 @@ package aui.lab.entities;
 
 import lombok.*;
 
+import jakarta.validation.constraints.NotBlank;
 import java.util.Comparator;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 public class CategoryUpdateDTO implements Comparable<CategoryUpdateDTO> {
-    private String name;
+    @NotBlank private String name;
 
     @Override
     public int compareTo(CategoryUpdateDTO other) {

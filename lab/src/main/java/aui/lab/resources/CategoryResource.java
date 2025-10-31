@@ -34,10 +34,10 @@ public class CategoryResource {
     }
 
     @PostMapping("/{id}/items")
-    public ResponseEntity<ItemDTO> addItemToCategory(@PathVariable UUID categoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
+    public ResponseEntity<ItemDTO> addItemToCategory(@PathVariable UUID id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         String name = itemUpdateDTO.getName();
-        Double price = Double.parseDouble(itemUpdateDTO.getPrice());
-        Item item = categoryService.createItem(categoryId, name, price);
+        Double price = itemUpdateDTO.getPrice();
+        Item item = categoryService.createItem(id, name, price);
         return new ResponseEntity<>(ItemDTO.from(item), HttpStatus.CREATED);
     }
 
@@ -49,6 +49,6 @@ public class CategoryResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
         categoryService.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
