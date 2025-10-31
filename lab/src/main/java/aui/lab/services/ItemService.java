@@ -3,19 +3,26 @@ package aui.lab.services;
 import aui.lab.entities.Category;
 import aui.lab.entities.Item;
 import aui.lab.repositories.ItemRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicMarkableReference;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ItemService {
     private final ItemRepository itemRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public List<Item> findAll() {
         return itemRepository.findAll();
@@ -43,11 +50,30 @@ public class ItemService {
 
     @Transactional
     public Item create(UUID categoryId, String name, Double price) {
+        Category categoryRef = entityManager.getReference(Category.class, categoryId);
+        Item item = Item.builder()
+                .id(UUID.randomUUID())
+                .name(name)
+                .price(price)
+                .category(categoryRef)
+                .build();
         return itemRepository.save(item);
     }
 
     @Transactional
     public Item save(Item item) {
+        return itemRepository.save(item);
+    }
+
+    @Transactional
+    public Item save(Item item, UUID newCategoryId) {
+        Category oldCategory = itemRepository.findById(item.getId()).get().getCategory();
+        oldCategory.removeItem(item);
+        Category newCategoryRef = entityManager.getReference(Category.class, newCategoryId);
+        if (newCategoryRef == null) {
+            throw new NoSuchElementException();
+        }
+        newCategoryRef.addItem(item);
         return itemRepository.save(item);
     }
 

@@ -43,12 +43,12 @@ public class CategoryResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory (@PathVariable UUID id, @RequestBody CategoryUpdateDTO categoryUpdateDTO) {
-        return new ResponseEntity<>(CategoryDTO.from(categoryService.update(id, categoryUpdateDTO.getName())), HttpStatus.OK);
+        return ResponseEntity.ok(CategoryDTO.from(categoryService.update(id, categoryUpdateDTO.getName())));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
         categoryService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }

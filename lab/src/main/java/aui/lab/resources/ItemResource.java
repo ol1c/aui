@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -43,5 +40,27 @@ public class ItemResource {
         Double price = Double.parseDouble(itemUpdateDTO.getPrice());
         Item item = itemService.create(categoryId, name, price);
         return new ResponseEntity<>(ItemDTO.from(item), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/items/{id}")
+    public ResponseEntity<ItemDTO> updateItem(@PathVariable UUID id,@RequestParam(required = false) UUID newCategoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
+        String name = itemUpdateDTO.getName();
+        Double price = Double.parseDouble(itemUpdateDTO.getPrice());
+        Optional<Item> item = itemService.findById(id);
+        if (item.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            if (newCategoryId != null) {
+                return new ResponseEntity<>(ItemDTO.from(itemService.save(item.get(),newCategoryId)), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(ItemDTO.from(itemService.save(item.get())), HttpStatus.CREATED);
+            }
+        }
+    }
+
+    @DeleteMapping("/items/{id}")
+    public ResponseEntity<Void> deleteItem(@PathVariable UUID id) {
+        itemService.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }
