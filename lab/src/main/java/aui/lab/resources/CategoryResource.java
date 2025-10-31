@@ -1,8 +1,6 @@
 package aui.lab.resources;
 
-import aui.lab.entities.Category;
-import aui.lab.entities.CategoryDTO;
-import aui.lab.entities.CategoryUpdateDTO;
+import aui.lab.entities.*;
 import aui.lab.services.CategoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("api/categories")
 public class CategoryResource {
     @Autowired
     private CategoryService categoryService;
@@ -24,9 +22,8 @@ public class CategoryResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategory(@PathVariable UUID id) {
-        Optional<Category> category = categoryService.findById(id);
-        return new ResponseEntity<>(category.map(CategoryDTO::from).orElse(null), HttpStatus.OK);
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable UUID id) {
+        return categoryService.findById(id).map(value -> ResponseEntity.ok(CategoryDTO.from(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("")
@@ -34,6 +31,14 @@ public class CategoryResource {
         String name = categoryUpdateDTO.getName();
         Category category = categoryService.create(name);
         return new ResponseEntity<>(CategoryDTO.from(category), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/items")
+    public ResponseEntity<ItemDTO> addItemToCategory(@PathVariable UUID categoryId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
+        String name = itemUpdateDTO.getName();
+        Double price = Double.parseDouble(itemUpdateDTO.getPrice());
+        Item item = categoryService.createItem(categoryId, name, price);
+        return new ResponseEntity<>(ItemDTO.from(item), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

@@ -42,6 +42,11 @@ public class ItemService {
     }
 
     @Transactional
+    public Item create(UUID categoryId, String name, Double price) {
+        return itemRepository.save(item);
+    }
+
+    @Transactional
     public Item save(Item item) {
         return itemRepository.save(item);
     }

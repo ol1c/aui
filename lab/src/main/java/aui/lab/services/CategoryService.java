@@ -1,12 +1,14 @@
 package aui.lab.services;
 
 import aui.lab.entities.Category;
+import aui.lab.entities.Item;
 import aui.lab.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,13 +44,26 @@ public class CategoryService {
     }
 
     @Transactional
+    public Item createItem(UUID categoryId, String name, Double price) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new NoSuchElementException("Category not found: " + categoryId));
+        Item item = Item.builder()
+                .id(UUID.randomUUID())
+                .name(name)
+                .price(price)
+                .build();
+        category.addItem(item);
+        categoryRepository.save(category);
+        return item;
+    }
+
+    @Transactional
     public Category save(Category category) {
         return categoryRepository.save(category);
     }
 
     @Transactional
     public Category update(UUID id, String name) {
-        Category category = categoryRepository.findById(id).orElseThrow();
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Category not found: " + id));
         category.setName(name);
         return categoryRepository.save(category);
     }

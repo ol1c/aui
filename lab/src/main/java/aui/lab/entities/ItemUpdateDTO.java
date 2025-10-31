@@ -12,7 +12,7 @@ import java.util.Comparator;
 @ToString
 public class ItemUpdateDTO implements Comparable<ItemUpdateDTO> {
     private String name;
-    private Double price;
+    private String price;
 
     @Override
     public int compareTo(ItemUpdateDTO other) {
