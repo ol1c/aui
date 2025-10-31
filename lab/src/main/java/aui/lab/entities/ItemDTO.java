@@ -14,15 +14,12 @@ public class ItemDTO implements Comparable<ItemDTO> {
     private String id;
     private String name;
     private String price;
-    private String categoryName;
 
     public static ItemDTO from(Item item) {
         return ItemDTO.builder()
                 .id(item.getId().toString())
                 .name(item.getName())
                 .price(item.getPrice().toString())
-                .categoryName(
-                        item.getCategory() != null ? item.getCategory().getName() : null)
                 .build();
     }
 

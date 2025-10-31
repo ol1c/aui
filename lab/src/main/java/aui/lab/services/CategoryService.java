@@ -33,7 +33,23 @@ public class CategoryService {
     }
 
     @Transactional
+    public Category create(String name) {
+        Category category = Category.builder()
+                .id(UUID.randomUUID())
+                .name(name)
+                .build();
+        return categoryRepository.save(category);
+    }
+
+    @Transactional
     public Category save(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Transactional
+    public Category update(UUID id, String name) {
+        Category category = categoryRepository.findById(id).orElseThrow();
+        category.setName(name);
         return categoryRepository.save(category);
     }
 

@@ -155,6 +155,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         } catch (IllegalArgumentException ignored) { }
     }
 
+//    LAB 1
 //    private void lab1(Category drinks, Category snacks) {
 //        List<Category> categories = List.of(drinks, snacks);
 //        categories.forEach(category -> {
