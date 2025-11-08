@@ -29,7 +29,7 @@ public class CategoryService {
                 .name(name)
                 .build();
         Category saved = categoryRepository.save(category);
-        categoryEventRepository.create(saved);
+        categoryEventRepository.upsert(saved);
         return saved;
     }
 
@@ -40,7 +40,7 @@ public class CategoryService {
         );
         category.setName(name);
         Category updated = categoryRepository.save(category);
-//        categoryEventRepository.create(updated);
+        categoryEventRepository.upsert(updated);
         return updated;
     }
 

@@ -16,7 +16,7 @@ public class CategoryEventRepository {
     private final RestTemplate restTemplate;
     private final CategoryToResponseFunction categoryToResponseFunction;
 
-    public void create(Category category) {
+    public void upsert(Category category) {
         CategoryResponse payload = categoryToResponseFunction.apply(category);
         restTemplate.postForEntity("/api/categories", payload, Void.class);
     }
