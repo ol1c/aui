@@ -11,7 +11,6 @@ Accept: application/json
 }
 
 > {%
-// IntelliJ HTTP Client test + zapamiętanie ID
 client.test("Create Category -> 201", function() {
   client.assert(response.status === 201, "Expected HTTP 201");
   client.assert(response.body.id, "Response should contain id");
@@ -31,8 +30,10 @@ client.test("List Categories -> 200", function() {
 });
 %}
 
+@categoryId = 6045c848-b7ba-4f2f-9647-289d07c8f640
+
 ### 3) Pobierz kategorię po ID
-GET {{host}}/api/categories/3af69d5b-b3c4-421f-b500-772e842bdb87
+GET {{host}}/api/categories/{{categoryId}}
 Accept: application/json
 
 > {%
@@ -43,7 +44,7 @@ client.test("Get Category by ID -> 200", function() {
 %}
 
 ### 4) Zaktualizuj nazwę kategorii
-PUT {{host}}/api/categories/af78e191-e413-4bfb-8d8d-86a27efe2989
+PUT {{host}}/api/categories/{{categoryId}}
 Content-Type: application/json
 Accept: application/json
 
@@ -59,9 +60,7 @@ client.test("Update Category -> 200", function() {
 %}
 
 ### 5) Dodaj item do kategorii (endpoint pod kategorią)
-# Uwaga: W Twoim kodzie są dwa endpointy POST /api/categories/{categoryId}/items
-# (w CategoryResource i ItemResource). Ten request zadziała niezależnie który zostawisz.
-POST {{host}}/api/categories/af78e191-e413-4bfb-8d8d-86a27efe2989/items
+POST {{host}}/api/categories/{{categoryId}}/items
 Content-Type: application/json
 Accept: application/json
 
@@ -90,8 +89,10 @@ client.test("List Items -> 200", function() {
 });
 %}
 
+@itemId = b5c912ed-9070-4723-a102-3b8aff2729cd
+
 ### 7) Pobierz item po ID
-GET {{host}}/api/items/251adf54-d20c-4de7-827f-0c348e8e4ffd
+GET {{host}}/api/items/{{itemId}}
 Accept: application/json
 
 > {%
@@ -102,7 +103,7 @@ client.test("Get Item by ID -> 200", function() {
 %}
 
 ### 8) Edytuj item po ID
-PUT {{host}}/api/items/251adf54-d20c-4de7-827f-0c348e8e4ffd
+PUT {{host}}/api/items/{{itemId}}
 Content-Type: application/json
 Accept: application/json
 
@@ -120,7 +121,7 @@ client.test("Update Item -> 200", function() {
 %}
 
 ### 9) Pobierz itemy danej kategorii
-GET {{host}}/api/categories/0676f533-6639-4c71-ad2a-8782f49bd272/items
+GET {{host}}/api/categories/{{categoryId}}/items
 Accept: application/json
 
 > {%
@@ -130,10 +131,8 @@ client.test("Get Items by Category -> 200", function() {
 });
 %}
 
-### 10) Usuń kategorię (opcjonalnie)
-# Uwaga: jeśli masz itemy niepowiązane przez kolekcję Category.items,
-# usunięcie kategorii może się nie powieść, chyba że masz ON DELETE CASCADE w DB.
-DELETE {{host}}/api/categories/0676f533-6639-4c71-ad2a-8782f49bd272
+### 10) Usuń kategorię 
+DELETE {{host}}/api/categories/{{categoryId}}
 
 > {%
 client.test("Delete Category -> 200 or 204", function() {
@@ -141,8 +140,8 @@ client.test("Delete Category -> 200 or 204", function() {
 });
 %}
 
-### 11) Pobierz kategorię po ID po usunięciu (powinno być 404, jeśli usunięto)
-GET {{host}}/api/categories/0676f533-6639-4c71-ad2a-8782f49bd272
+### 11) Pobierz kategorię po ID po usunięciu
+GET {{host}}/api/categories/{{categoryId}}
 Accept: application/json
 
 > {%
