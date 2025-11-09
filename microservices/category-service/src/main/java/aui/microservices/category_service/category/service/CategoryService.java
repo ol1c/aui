@@ -34,6 +34,17 @@ public class CategoryService {
     }
 
     @Transactional
+    public Category create(UUID id, String name) {
+        Category category = Category.builder()
+                .id(id)
+                .name(name)
+                .build();
+        Category saved = categoryRepository.save(category);
+        categoryEventRepository.upsert(saved);
+        return saved;
+    }
+
+    @Transactional
     public Category update(UUID id, String name) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Category not found: " + id)

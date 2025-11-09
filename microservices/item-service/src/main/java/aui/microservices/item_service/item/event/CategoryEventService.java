@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -12,8 +13,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CategoryEventService {
-    private final ItemRepository itemRepository;
     private final CategoryEventRepository categoryRepository;
+
+    public List<SimplifiedCategory> findAll() { return categoryRepository.findAll(); }
 
     @Transactional
     public void save(UUID id, String name) {
