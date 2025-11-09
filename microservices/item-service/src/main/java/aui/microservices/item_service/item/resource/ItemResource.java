@@ -23,7 +23,10 @@ public class ItemResource {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<ItemResponse> getAll() {
+    public List<ItemResponse> getAll(@RequestParam(value = "categoryId", required = false) UUID categoryId) {
+        if (categoryId != null) {
+            return itemService.findAllByCategoryId(categoryId).stream().map(itemToResponse).collect(Collectors.toList());
+        }
         return itemService.findAll().stream().map(itemToResponse).collect(Collectors.toList());
     }
 
@@ -47,7 +50,10 @@ public class ItemResource {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ItemResponse update(@PathVariable UUID id, @RequestBody ItemMap map) {
-        return itemToResponse.apply(itemService.update(id, map.getName(), map.getPrice(), UUID.fromString(map.getCategoryId())));
+        if (map.getCategoryId() != null) {
+            return itemToResponse.apply(itemService.update(id, map.getName(), map.getPrice(), UUID.fromString(map.getCategoryId())));
+        }
+        return itemToResponse.apply(itemService.update(id, map.getName(), map.getPrice(), null));
     }
 
     @DeleteMapping("/{id}")

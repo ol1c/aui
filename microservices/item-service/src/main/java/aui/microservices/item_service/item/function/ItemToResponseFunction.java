@@ -2,9 +2,11 @@ package aui.microservices.item_service.item.function;
 
 import aui.microservices.item_service.item.domain.Item;
 import aui.microservices.item_service.item.domain.ItemResponse;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
+@Component
 public class ItemToResponseFunction implements Function<Item, ItemResponse> {
 
     @Override

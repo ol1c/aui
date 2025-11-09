@@ -22,6 +22,7 @@ public class ItemService {
 
     public List<Item> findAll() { return itemRepository.findAll(); }
     public Optional<Item> findById(UUID id) { return itemRepository.findById(id); }
+    public List<Item> findAllByCategoryId(UUID categoryId) { return itemRepository.findAllByCategoryId(categoryId); }
 
     @Transactional
     public Item create(String name, Double price, UUID categoryId) {
