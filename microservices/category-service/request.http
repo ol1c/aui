@@ -1,0 +1,79 @@
+### Ustawienia środowiska
+@host = http://localhost:8082
+
+### 1) Utwórz kategorię
+POST {{host}}/api/categories
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Drinks"
+}
+
+> {%
+client.test("Create Category -> 201", function() {
+  client.assert(response.status === 201, "Expected HTTP 201");
+  client.assert(response.body.id, "Response should contain id");
+  client.assert(response.body.name === "Drinks", "Name should be 'Drinks'");
+});
+client.global.set("categoryId", response.body.id);
+%}
+
+### 2) Pobierz wszystkie kategorie
+GET {{host}}/api/categories
+Accept: application/json
+
+> {%
+client.test("List Categories -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(Array.isArray(response.body), "Body should be an array");
+});
+%}
+
+@categoryId = 8108536f-a12d-4b65-8776-b256bc973fc9
+
+### 3) Pobierz kategorię po ID
+GET {{host}}/api/categories/{{categoryId}}
+Accept: application/json
+
+> {%
+client.test("Get Category by ID -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.id === client.global.get("categoryId"), "IDs should match");
+});
+%}
+
+### 4) Zaktualizuj nazwę kategorii
+PUT {{host}}/api/categories/{{categoryId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Other"
+}
+
+> {%
+client.test("Update Category -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.name === "Drinks & Beverages", "Name should be updated");
+});
+%}
+
+### 5) Usuń kategorię 
+DELETE {{host}}/api/categories/{{categoryId}}
+
+> {%
+client.test("Delete Category -> 200 or 204", function() {
+  client.assert([200, 204].includes(response.status), "Expected HTTP 200 or 204");
+});
+%}
+
+### 6) Pobierz kategorię po ID po usunięciu
+GET {{host}}/api/categories/{{categoryId}}
+Accept: application/json
+
+> {%
+client.test("Get Deleted Category -> 404", function() {
+  client.assert(response.status === 404, "Expected HTTP 404 after delete");
+});
+%}

@@ -1,0 +1,183 @@
+### Ustawienia środowiska
+@host = http://localhost:8080
+@category = http://localhost:8082
+@items = http://localhost:8081
+
+### 1) Utwórz kategorię
+POST {{host}}/api/categories
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Drinks"
+}
+
+> {%
+client.test("Create Category -> 201", function() {
+  client.assert(response.status === 201, "Expected HTTP 201");
+  client.assert(response.body.id, "Response should contain id");
+  client.assert(response.body.name === "Drinks", "Name should be 'Drinks'");
+});
+client.global.set("categoryId", response.body.id);
+%}
+
+### 2) Pobierz wszystkie kategorie
+GET {{host}}/api/categories
+Accept: application/json
+
+> {%
+client.test("List Categories -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(Array.isArray(response.body), "Body should be an array");
+});
+%}
+
+@categoryId = 8108536f-a12d-4b65-8776-b256bc973fc9
+
+### 3) Pobierz kategorię po ID
+GET {{host}}/api/categories/{{categoryId}}
+Accept: application/json
+
+> {%
+client.test("Get Category by ID -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.id === client.global.get("categoryId"), "IDs should match");
+});
+%}
+
+### 4) Zaktualizuj nazwę kategorii
+PUT {{host}}/api/categories/{{categoryId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Other"
+}
+
+> {%
+client.test("Update Category -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.name === "Drinks & Beverages", "Name should be updated");
+});
+%}
+
+### 5) Dodaj item do kategorii (endpoint pod kategorią)
+POST {{host}}/api/items
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Energy Drink",
+  "price": 0.99,
+  "categoryId": "{{categoryId}}"
+}
+
+> {%
+client.test("Create Item under Category -> 201", function() {
+  client.assert(response.status === 201, "Expected HTTP 201");
+  client.assert(response.body.id, "Item should have id");
+  client.assert(response.body.name === "Water", "Item name should be 'Water'");
+});
+client.global.set("itemId", response.body.id);
+%}
+
+### 6) Pobierz wszystkie itemy (globalnie)
+GET {{host}}/api/items
+Accept: application/json
+
+> {%
+client.test("List Items -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(Array.isArray(response.body), "Body should be an array");
+});
+%}
+
+@itemId = d2282f6b-739f-4094-a60a-2100ec9bf25d
+
+### 7) Pobierz item po ID
+GET {{host}}/api/items/{{itemId}}
+Accept: application/json
+
+> {%
+client.test("Get Item by ID -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.id === client.global.get("itemId"), "Item IDs should match");
+});
+%}
+
+### 8) Edytuj item po ID
+PUT {{host}}/api/items/{{itemId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Ticket",
+  "price": "2.99"
+}
+
+> {%
+client.test("Update Item -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.name === "Ticket", "Name should be updated");
+  client.assert(response.body.price === "1.99", "Price should be updated");
+});
+%}
+
+### 9) Edytuj item po ID (zmień kategorie)
+PUT {{host}}/api/items/{{itemId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Ticket",
+  "price": "2.99",
+  "categoryId": "{{categoryId}}"
+}
+
+> {%
+client.test("Update Item -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.name === "Ticket", "Name should be updated");
+  client.assert(response.body.price === "1.99", "Price should be updated");
+});
+%}
+
+### 10) Pobierz itemy danej kategorii
+GET {{host}}/api/items?categoryId={{categoryId}}
+Accept: application/json
+
+> {%
+client.test("Get Items by Category -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(Array.isArray(response.body), "Body should be an array");
+});
+%}
+
+
+### 11) Usuń item 
+DELETE {{host}}/api/items/{{itemId}}
+
+> {%
+client.test("Delete Item -> 200 or 204", function() {
+  client.assert([200, 204].includes(response.status), "Expected HTTP 200 or 204");
+});
+%}
+
+### 12) Usuń kategorię 
+DELETE {{host}}/api/categories/{{categoryId}}
+
+> {%
+client.test("Delete Category -> 200 or 204", function() {
+  client.assert([200, 204].includes(response.status), "Expected HTTP 200 or 204");
+});
+%}
+
+### 13) Pobierz kategorię po ID po usunięciu
+GET {{host}}/api/categories/{{categoryId}}
+Accept: application/json
+
+> {%
+client.test("Get Deleted Category -> 404", function() {
+  client.assert(response.status === 404, "Expected HTTP 404 after delete");
+});
+%}
