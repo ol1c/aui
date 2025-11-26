@@ -1,5 +1,7 @@
 ### Ustawienia środowiska
 @host = http://localhost:8080
+@category = http://localhost:8082
+@items = http://localhost:8081
 
 ### 1) Utwórz kategorię
 POST {{host}}/api/categories
@@ -30,7 +32,7 @@ client.test("List Categories -> 200", function() {
 });
 %}
 
-@categoryId = 6045c848-b7ba-4f2f-9647-289d07c8f640
+@categoryId = 8108536f-a12d-4b65-8776-b256bc973fc9
 
 ### 3) Pobierz kategorię po ID
 GET {{host}}/api/categories/{{categoryId}}
@@ -60,13 +62,14 @@ client.test("Update Category -> 200", function() {
 %}
 
 ### 5) Dodaj item do kategorii (endpoint pod kategorią)
-POST {{host}}/api/categories/{{categoryId}}/items
+POST {{host}}/api/items
 Content-Type: application/json
 Accept: application/json
 
 {
   "name": "Energy Drink",
-  "price": "0.99"
+  "price": 0.99,
+  "categoryId": "{{categoryId}}"
 }
 
 > {%
@@ -89,7 +92,7 @@ client.test("List Items -> 200", function() {
 });
 %}
 
-@itemId = b5c912ed-9070-4723-a102-3b8aff2729cd
+@itemId = d2282f6b-739f-4094-a60a-2100ec9bf25d
 
 ### 7) Pobierz item po ID
 GET {{host}}/api/items/{{itemId}}
@@ -120,8 +123,27 @@ client.test("Update Item -> 200", function() {
 });
 %}
 
-### 9) Pobierz itemy danej kategorii
-GET {{host}}/api/categories/{{categoryId}}/items
+### 9) Edytuj item po ID (zmień kategorie)
+PUT {{host}}/api/items/{{itemId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Ticket",
+  "price": "2.99",
+  "categoryId": "{{categoryId}}"
+}
+
+> {%
+client.test("Update Item -> 200", function() {
+  client.assert(response.status === 200, "Expected HTTP 200");
+  client.assert(response.body.name === "Ticket", "Name should be updated");
+  client.assert(response.body.price === "1.99", "Price should be updated");
+});
+%}
+
+### 10) Pobierz itemy danej kategorii
+GET {{host}}/api/items?categoryId={{categoryId}}
 Accept: application/json
 
 > {%
@@ -131,16 +153,17 @@ client.test("Get Items by Category -> 200", function() {
 });
 %}
 
-### 10) Usuń item 
+
+### 11) Usuń item 
 DELETE {{host}}/api/items/{{itemId}}
 
 > {%
-client.test("Delete Category -> 200 or 204", function() {
+client.test("Delete Item -> 200 or 204", function() {
   client.assert([200, 204].includes(response.status), "Expected HTTP 200 or 204");
 });
 %}
 
-### 11) Usuń kategorię 
+### 12) Usuń kategorię 
 DELETE {{host}}/api/categories/{{categoryId}}
 
 > {%
@@ -149,7 +172,7 @@ client.test("Delete Category -> 200 or 204", function() {
 });
 %}
 
-### 12) Pobierz kategorię po ID po usunięciu
+### 13) Pobierz kategorię po ID po usunięciu
 GET {{host}}/api/categories/{{categoryId}}
 Accept: application/json
 
