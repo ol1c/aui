@@ -6,15 +6,17 @@
   </div>
 
   <ng-container *ngIf="loading">
-      Loading…
+        Loading…
   </ng-container>
   <div *ngIf="error" class="error">{{ error }}</div>
 
   <ul *ngIf="!loading && !error && categories.length > 0">
     <li *ngFor="let category of categories" class="row">
-      <span class="name">{{ category.name }}</span>
-      <a class="btn secondary" [routerLink]="['/categories', category.id, 'edit']">Edit</a>
-      <button class="remove" (click)="removeCategory(category)">Delete</button>
+      <span class="name"><a [routerLink]="['/categories', category.id]">{{ category.name }}</a></span>
+      <div>
+        <a class="btn secondary" [routerLink]="['/categories', category.id, 'edit']">Edit</a>
+        <button class="remove" (click)="removeCategory(category)">Delete</button>
+      </div>
     </li>
   </ul>
 
