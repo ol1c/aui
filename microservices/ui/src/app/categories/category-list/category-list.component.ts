@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { CategoryService } from '../category.service';
 import { Category } from '../../models/category';
 
 @Component({
   selector: 'app-category-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.scss'],
 })
