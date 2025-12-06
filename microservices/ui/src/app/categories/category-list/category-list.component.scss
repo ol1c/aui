@@ -1,0 +1,35 @@
+.category-list {
+  max-width: 640px;
+  margin: 24px auto;
+  padding: 0 16px;
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .name {
+    font-weight: 500;
+  }
+
+  .remove {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: #c62828;
+    }
+  }
+
+  .error {
+    color: #c62828;
+    margin-bottom: 12px;
+  }
+}

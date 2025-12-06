@@ -1,0 +1,17 @@
+<div class="category-list">
+  <h1>Kategorie</h1>
+
+  <ng-container *ngIf="loading">Loading…</ng-container>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <ul *ngIf="!loading && !error && categories.length > 0">
+    <li *ngFor="let category of categories" class="row">
+      <span class="name">{{ category.name }}</span>
+      <button class="remove" (click)="removeCategory(category)">Delete</button>
+    </li>
+  </ul>
+
+  <div *ngIf="!loading && !error && categories.length === 0">
+    No categories to display.
+  </div>
+</div>

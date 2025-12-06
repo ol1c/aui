@@ -1,0 +1,56 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CategoryService } from '../category.service';
+import { Category } from '../../models/category';
+
+@Component({
+  selector: 'app-category-list',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './category-list.component.html',
+  styleUrls: ['./category-list.component.scss'],
+})
+export class CategoryListComponent implements OnInit {
+  categories: Category[] = [];
+  loading = false;
+  error?: string;
+
+  constructor(private categoryService: CategoryService) {}
+
+  ngOnInit(): void {
+    this.fetchCategories();
+  }
+
+  fetchCategories(): void {
+    this.loading = true;
+    this.error = "";
+    this.categoryService.listCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to fetch categories.';
+        console.error(err);
+        this.loading = false;
+      },
+    });
+  }
+
+  removeCategory(category: Category): void {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete the category "${category.name}"?`
+    );
+    if (!confirmed) return;
+
+    this.categoryService.deleteCategory(category.id).subscribe({
+      next: () => {
+        this.categories = this.categories.filter((c) => c.id !== category.id);
+      },
+      error: (err) => {
+        this.error = 'Failed to delete category.';
+        console.error(err);
+      },
+    });
+  }
+}
