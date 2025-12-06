@@ -3,35 +3,34 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Item } from '../models/item';
-import { Category } from '../models/category';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService {
-  private readonly baseUrl = `${environment.apiBase}`;
+  private readonly baseUrl = `${environment.apiBase}/items`;
 
   constructor(private http: HttpClient) {}
 
   listItems(): Observable<Item[]> {
-    return this.http.get<Item[]>(`${this.baseUrl}/items`);
+    return this.http.get<Item[]>(this.baseUrl);
   }
 
-  getItem(id: string | number): Observable<Item> {
-    return this.http.get<Item>(`${this.baseUrl}/items/${id}`);
+  listItemsByCategory(categoryId: string | number): Observable<Item[]> {
+    return this.http.get<Item[]>(`${this.baseUrl}?categoryId=${categoryId}`);
   }
 
-  getItemsByCategory(categoryId: string): Observable<Item[]> {
-      return this.http.get<Item[]>(`${this.baseUrl}/items?categoryId=${categoryId}`);
+  getItem(itemId: string | number): Observable<Item> {
+    return this.http.get<Item>(`${this.baseUrl}/${itemId}`);
   }
 
-  createItem(payload: { name: string, price: string | number, categoryId: string | number }): Observable<Item> {
-      return this.http.post<Item>(`${this.baseUrl}/items`, payload);
+  createItem(payload: { name: string; price: number; categoryId: string | number }): Observable<Item> {
+    return this.http.post<Item>(this.baseUrl, payload);
   }
 
-  updateItem(id: string, payload: { name: string, price: string | number, categoryId: string | number }): Observable<Item> {
-      return this.http.put<Item>(`${this.baseUrl}/items/${id}`, payload);
+  updateItem(itemId: string | number, payload: { name: string; price: number; categoryId?: string | number }): Observable<Item> {
+    return this.http.put<Item>(`${this.baseUrl}/${itemId}`, payload);
   }
 
-  deleteItem(id: string | number): Observable<void> {
-      return this.http.delete<void>(`${this.baseUrl}/items/${id}`);
+  deleteItem(itemId: string | number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${itemId}`);
   }
 }

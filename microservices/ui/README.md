@@ -1,59 +1,126 @@
-# Ui
+# Angular Frontend Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.2.
+This is a complete Angular application that communicates with the existing microservices gateway to manage categories and items. The application follows modern Angular practices with routing and component-based architecture.
 
-## Development server
+## Features
 
-To start a local development server, run:
+### Categories Management
+- **Categories List** (`/categories`) - View all categories with add, edit, delete, and view details actions
+- **Add Category** (`/categories/add`) - Create a new category
+- **Edit Category** (`/categories/:id/edit`) - Edit an existing category
+- **Category Details** (`/categories/:id`) - View category details and manage its items
 
-```bash
-ng serve
+### Items Management
+- **Add Item** (`/categories/:categoryId/items/add`) - Create a new item in a category
+- **Edit Item** (`/categories/:categoryId/items/:itemId/edit`) - Edit an existing item
+- **Item Details** (`/categories/:categoryId/items/:itemId`) - View item details
+
+## Project Structure
+
+```
+src/app/
+├── categories/
+│   ├── category-list/      # List all categories
+│   ├── category-add/       # Add new category
+│   ├── category-edit/      # Edit category
+│   ├── category-details/   # View category with items
+│   └── category.service.ts # Category CRUD operations
+├── items/
+│   ├── item-add/           # Add new item
+│   ├── item-edit/          # Edit item
+│   ├── item-details/       # View item details
+│   └── item.service.ts     # Item CRUD operations
+├── models/
+│   ├── category.ts         # Category interface
+│   └── item.ts             # Item interface
+└── app.routes.ts           # Route definitions
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Prerequisites
 
-## Code scaffolding
+- Node.js (v18 or higher)
+- npm (v11.6.2 or higher)
+- Angular CLI (v21.0.2)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Installation
 
+1. Install dependencies:
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Development
+
+### Development Server
+
+To start a local development server with proxy to the gateway:
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+The application will be available at `http://localhost:4200/`. The dev server uses a proxy configuration to forward API requests to the gateway at `http://localhost:8080`.
 
-To build the project run:
+### Building
+
+To build the project for production:
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## API Configuration
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+The application is configured to communicate with the gateway API at:
+- **Development**: `/api` (proxied to `http://localhost:8080`)
+- **Production**: Configure in `src/environments/environment.prod.ts`
+
+### API Endpoints Used
+
+**Categories:**
+- `GET /api/categories` - Get all categories
+- `GET /api/categories/{id}` - Get category by ID
+- `POST /api/categories` - Create new category
+- `PUT /api/categories/{id}` - Update category
+- `DELETE /api/categories/{id}` - Delete category
+
+**Items:**
+- `GET /api/items` - Get all items
+- `GET /api/items?categoryId={id}` - Get items by category
+- `GET /api/items/{id}` - Get item by ID
+- `POST /api/items` - Create new item
+- `PUT /api/items/{id}` - Update item
+- `DELETE /api/items/{id}` - Delete item
+
+## Running with Microservices
+
+1. Start the gateway service (on port 8080)
+2. Start the category service (on port 8082)
+3. Start the item service (on port 8081)
+4. Start the Angular application:
+```bash
+npm start
+```
+
+## Testing
+
+To execute unit tests:
 
 ```bash
-ng test
+npm test
 ```
 
-## Running end-to-end tests
+## Technology Stack
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- **Angular 21** - Frontend framework
+- **TypeScript 5.9** - Programming language
+- **RxJS 7.8** - Reactive programming
+- **Angular Router** - Navigation
+- **Angular Reactive Forms** - Form handling
+- **SCSS** - Styling
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+For more information on using the Angular CLI, visit the [Angular CLI Documentation](https://angular.dev/tools/cli).

@@ -1,6 +1,6 @@
 export interface Item {
   id: string | number;
   name: string;
-  price: string | number;
+  price: number;
   categoryId: string | number;
 }
