@@ -23,7 +23,7 @@ export class CategoryListComponent implements OnInit {
 
   fetchCategories(): void {
     this.loading = true;
-    this.error = "";
+    this.error = undefined;
     this.categoryService.listCategories().subscribe({
       next: (cats) => {
         this.categories = cats;
@@ -33,7 +33,7 @@ export class CategoryListComponent implements OnInit {
         this.error = 'Failed to fetch categories.';
         console.error(err);
         this.loading = false;
-      },
+      }
     });
   }
 
