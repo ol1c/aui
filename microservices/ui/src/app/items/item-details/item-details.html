@@ -1,0 +1,20 @@
+<div class="item-details">
+  <h1>Item Details</h1>
+
+  <ng-container *ngIf="loading">
+    Loading…
+  </ng-container>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && item" class="item-info">
+    <h2>{{ item.name }}</h2>
+    <p><strong>ID:</strong> {{ item.id }}</p>
+    <p><strong>Price:</strong> ${{ item.price }}</p>
+    <p><strong>Category ID:</strong> {{ item.categoryId }}</p>
+    
+    <div class="actions">
+      <a class="btn secondary" [routerLink]="['/categories', categoryId]">Back to Category</a>
+      <a class="btn secondary" [routerLink]="['/categories', categoryId, 'items', itemId, 'edit']">Edit Item</a>
+    </div>
+  </div>
+</div>
