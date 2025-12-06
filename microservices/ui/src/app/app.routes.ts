@@ -3,7 +3,7 @@ import { CategoryListComponent } from './categories/category-list/category-list.
 import { CategoryAddComponent } from './categories/category-add/category-add.component';
 import { CategoryEditComponent } from './categories/category-edit/category-edit.component';
 import { CategoryDetailsComponent } from './categories/category-details/category-details.component';
-// import { ItemAddComponent } from './items/item-add/item-add.component';
+import { ItemAddComponent } from './items/item-add/item-add.component';
 // import { ItemEditComponent } from './items/item-edit/item-edit.component';
 // import { ItemDetailsComponent } from './items/item-details/item-details.component';
 
@@ -12,5 +12,6 @@ export const routes: Routes = [
   { path: 'categories', component: CategoryListComponent },
   { path: 'categories/add', component: CategoryAddComponent },
   { path: 'categories/:id/edit', component: CategoryEditComponent },
-  { path: 'categories/:id', component: CategoryDetailsComponent }
+  { path: 'categories/:id', component: CategoryDetailsComponent },
+  { path: 'categories/:categoryId/items/add', component: ItemAddComponent }
   ];
