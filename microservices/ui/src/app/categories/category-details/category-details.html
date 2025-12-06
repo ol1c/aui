@@ -9,14 +9,14 @@
   <div *ngIf="!loading && !error && category" class="category-info">
     <h2>{{ category.name }}</h2>
     <p><strong>ID:</strong> {{ category.id }}</p>
-
+    
     <div class="actions">
       <a class="btn secondary" routerLink="/categories">Back to Categories</a>
       <a class="btn secondary" [routerLink]="['/categories', categoryId, 'edit']">Edit Category</a>
     </div>
 
     <h3>Items</h3>
-
+    
     <div class="actions">
       <a class="btn primary" [routerLink]="['/categories', categoryId, 'items', 'add']">Add Item</a>
     </div>

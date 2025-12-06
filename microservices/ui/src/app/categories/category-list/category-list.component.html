@@ -13,11 +13,9 @@
   <ul *ngIf="!loading && !error && categories.length > 0">
     <li *ngFor="let category of categories" class="row">
       <span class="name">{{ category.name }}</span>
-      <div>
-        <a class="btn secondary" [routerLink]="['/categories', category.id]">View</a>
-        <a class="btn secondary" [routerLink]="['/categories', category.id, 'edit']">Edit</a>
-        <button class="remove" (click)="removeCategory(category)">Delete</button>
-      </div>
+      <a class="btn secondary" [routerLink]="['/categories', category.id]">View</a>
+      <a class="btn secondary" [routerLink]="['/categories', category.id, 'edit']">Edit</a>
+      <button class="remove" (click)="removeCategory(category)">Delete</button>
     </li>
   </ul>
 
