@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -19,7 +19,12 @@ export class CategoryEditComponent {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private service: CategoryService, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private fb: FormBuilder,
+     private service: CategoryService,
+      private router: Router,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     });
@@ -37,11 +42,13 @@ export class CategoryEditComponent {
       next: (cat) => {
         this.form.patchValue({ name: cat.name ?? '' });
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('load category error', err);
         this.error = 'Failed to load category.';
         this.loading = false;
+        this.cdr.markForCheck();
       },
     });
   }

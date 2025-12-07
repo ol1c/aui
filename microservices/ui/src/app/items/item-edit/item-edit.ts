@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -23,7 +23,8 @@ export class ItemEditComponent implements OnInit {
     private fb: FormBuilder,
     private itemService: ItemService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -34,10 +35,11 @@ export class ItemEditComponent implements OnInit {
   ngOnInit(): void {
     this.categoryId = this.route.snapshot.paramMap.get('categoryId')!;
     this.itemId = this.route.snapshot.paramMap.get('itemId')!;
-    
+
     if (!this.categoryId || !this.itemId) {
       this.error = 'Category ID or Item ID is missing.';
       this.loading = false;
+      this.cdr.markForCheck();
       return;
     }
 
@@ -48,11 +50,13 @@ export class ItemEditComponent implements OnInit {
           price: item.price ?? 0,
         });
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('load item error', err);
         this.error = 'Failed to load item.';
         this.loading = false;
+        this.cdr.markForCheck();
       },
     });
   }

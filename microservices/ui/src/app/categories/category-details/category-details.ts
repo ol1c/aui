@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { CategoryService } from '../category.service';
@@ -23,7 +23,8 @@ export class CategoryDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private categoryService: CategoryService,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +49,7 @@ export class CategoryDetailsComponent implements OnInit {
         this.error = 'Failed to fetch category details.';
         console.error(err);
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -57,11 +59,13 @@ export class CategoryDetailsComponent implements OnInit {
       next: (items) => {
         this.items = items;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = 'Failed to fetch items.';
         console.error(err);
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }

@@ -10,8 +10,8 @@
     <h2>{{ item.name }}</h2>
     <p><strong>ID:</strong> {{ item.id }}</p>
     <p><strong>Price:</strong> ${{ item.price }}</p>
-    <p><strong>Category ID:</strong> {{ item.categoryId }}</p>
-    
+    <p><strong>Category ID:</strong> {{ item.categoryName }}</p>
+
     <div class="actions">
       <a class="btn secondary" [routerLink]="['/categories', categoryId]">Back to Category</a>
       <a class="btn secondary" [routerLink]="['/categories', categoryId, 'items', itemId, 'edit']">Edit Item</a>

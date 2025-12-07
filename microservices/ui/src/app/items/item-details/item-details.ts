@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { ItemService } from '../item.service';
@@ -20,13 +20,14 @@ export class ItemDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.categoryId = this.route.snapshot.paramMap.get('categoryId')!;
     this.itemId = this.route.snapshot.paramMap.get('itemId')!;
-    
+
     if (!this.categoryId || !this.itemId) {
       this.error = 'Category ID or Item ID is missing.';
       return;
@@ -42,11 +43,13 @@ export class ItemDetailsComponent implements OnInit {
       next: (item) => {
         this.item = item;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = 'Failed to fetch item details.';
         console.error(err);
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }

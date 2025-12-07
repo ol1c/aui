@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
@@ -17,7 +17,7 @@ export class CategoryListComponent implements OnInit {
   loading = false;
   error?: string;
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -30,11 +30,13 @@ export class CategoryListComponent implements OnInit {
       next: (cats) => {
         this.categories = cats;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = 'Failed to fetch categories.';
         console.error(err);
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
