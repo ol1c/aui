@@ -1,0 +1,28 @@
+services:
+  item-service:
+    image: item-service:0.0.1-SNAPSHOT
+    restart: always
+    environment:
+      MICROSERVICES_CATEGORY_URL: "http://category-service:8080"
+
+  category-service:
+    image: category-service:0.0.1-SNAPSHOT
+    restart: always
+    environment:
+      MICROSERVICES_ITEM_URL: "http://item-service:8080"
+
+  gateway:
+    image: gateway:0.0.1-SNAPSHOT
+    restart: always
+    environment:
+      MICROSERVICES_ITEM_URL: "http://item-service:8080"
+      MICROSERVICES_CATEGORY_URL: "http://category-service:8080"
+      MICROSERVICES_GATEWAY_HOST: "gateway:8080"
+
+  simple-rpg-ng:
+    image: aui-ng:0.0.1-SNAPSHOT
+    restart: always
+    environment:
+      API_URL: http://gateway:8080/api
+    ports:
+      - "8084:80"
