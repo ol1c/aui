@@ -1,7 +1,7 @@
 FROM nginx:1.23.3
 
 LABEL org.opencontainers.image.title="aui-ng"
-LABEL org.opencontainers.image.version="1.0.0"
+LABEL org.opencontainers.image.version="0.0.1-SNAPSHOT"
 LABEL org.opencontainers.image.source="https://github.com/ol1c/aui"
 LABEL org.opencontainers.image.url="https://github.com/ol1c/aui"
 LABEL org.opencontainers.image.description="Simple Vending Machine Service."

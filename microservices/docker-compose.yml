@@ -1,17 +1,26 @@
 services:
   item-service:
+    build:
+      context: ./item-service
+      dockerfile: Dockerfile
     image: item-service:0.0.1-SNAPSHOT
     restart: always
     environment:
       MICROSERVICES_CATEGORY_URL: "http://category-service:8080"
 
   category-service:
+    build:
+      context: ./category-service
+      dockerfile: Dockerfile
     image: category-service:0.0.1-SNAPSHOT
     restart: always
     environment:
       MICROSERVICES_ITEM_URL: "http://item-service:8080"
 
   gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
     image: gateway:0.0.1-SNAPSHOT
     restart: always
     environment:
@@ -19,7 +28,10 @@ services:
       MICROSERVICES_CATEGORY_URL: "http://category-service:8080"
       MICROSERVICES_GATEWAY_HOST: "gateway:8080"
 
-  simple-rpg-ng:
+  aui-ng:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
     image: aui-ng:0.0.1-SNAPSHOT
     restart: always
     environment:
