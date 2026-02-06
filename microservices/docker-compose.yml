@@ -1,0 +1,100 @@
+services:
+  item-db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: item_db
+      POSTGRES_USER: item_user
+      POSTGRES_PASSWORD: item_pass
+    volumes:
+      - item-data:/var/lib/postgresql/data
+    networks:
+      - item-network
+
+  item-service:
+    build:
+      context: ./item-service
+      dockerfile: Dockerfile
+    image: item-service:0.0.1-SNAPSHOT
+    restart: always
+    depends_on:
+      - item-db
+    environment:
+      MICROSERVICES_CATEGORY_URL: "http://category-service:8080"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://item-db:5432/item_db"
+      SPRING_DATASOURCE_USERNAME: item_user
+      SPRING_DATASOURCE_PASSWORD: item_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - item-network
+      - app-network
+
+  category-db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: category_db
+      MYSQL_USER: category_user
+      MYSQL_PASSWORD: category_pass
+      MYSQL_ROOT_PASSWORD: category_password
+    volumes:
+      - category-data:/var/lib/mysql
+    networks:
+      - category-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  category-service:
+    build:
+      context: ./category-service
+      dockerfile: Dockerfile
+    image: category-service:0.0.1-SNAPSHOT
+    restart: always
+    depends_on:
+      - category-db
+    environment:
+      MICROSERVICES_ITEM_URL: "http://item-service:8080"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://category-db:3306/category_db"
+      SPRING_DATASOURCE_USERNAME: category_user
+      SPRING_DATASOURCE_PASSWORD: category_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - category-network
+      - app-network
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: gateway:0.0.1-SNAPSHOT
+    restart: always
+    environment:
+      MICROSERVICES_ITEM_URL: "http://item-service:8080"
+      MICROSERVICES_CATEGORY_URL: "http://category-service:8080"
+      MICROSERVICES_GATEWAY_HOST: "gateway:8080"
+    networks:
+      - app-network
+
+  aui-ng:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    image: aui-ng:0.0.1-SNAPSHOT
+    restart: always
+    environment:
+      API_URL: http://gateway:8080/api
+    ports:
+      - "8084:80"
+    networks:
+      - app-network
+
+networks:
+  category-network:
+    driver: bridge
+  item-network:
+    driver: bridge
+  app-network:
+    driver: bridge
+
+volumes:
+  category-data:
+  item-data:

@@ -1,4 +1,5 @@
 package aui.microservices.gateway;
+import org.springframework.core.env.Environment;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,13 +15,13 @@ public class GatewayApplication {
 	}
 
 	@Bean
-	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder, Environment env) {
+		String categoryUrl = env.getProperty("MICROSERVICES_CATEGORY_URL", "http://category-service:8082");
+		String itemUrl = env.getProperty("MICROSERVICES_ITEM_URL", "http://item-service:8081");
+
 		return builder.routes()
-				.route("categories", r -> r.path("/api/categories/**")
-						.uri("http://localhost:8082"))
-				.route("items", r -> r.path("/api/items/**")
-						.uri("http://localhost:8081"))
-				// przykład: nie wystawiaj wewnętrznych endpointów (brak routingu dla /internal/**)
+				.route("categories", r -> r.path("/api/categories/**").uri(categoryUrl))
+				.route("items", r -> r.path("/api/items/**").uri(itemUrl))
 				.build();
 	}
 
